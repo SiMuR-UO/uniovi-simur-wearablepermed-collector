@@ -1,5 +1,5 @@
 # Description
-Uniovi Simur WearablePerMed Data Collector. Copy all files except images and movies from a dataset of files
+Uniovi Simur WearablePerMed Data Collector. Copy all files from one folder to another one excluding some file extensions.
 
 # Execute
 
