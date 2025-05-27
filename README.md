@@ -9,5 +9,6 @@ For example: copy all files from folder `/media/simur/maxone/COMPLETOS` to folde
 python3 main.py \
 -sr '/media/simur/maxone/COMPLETOS' \
 -dr '/home/simur/git/uniovi-simur-wearablepermed-data' \
--ex '.MOV, .JPG' 
+-ex '.MOV, .JPG'
+-v
 ```

@@ -100,15 +100,15 @@ def copy_files(files_to_copy):
             shutil.copy2(source_file, destination_file)
             pbar.update(1)
 
-_logger.debug("Starting collector ...")
+_logger.info("Starting collector ...")
 
 args = parse_args(sys.argv[1:])
 setup_logging(args.loglevel)
 
-_logger.debug("Filering files to be copied ...")
+_logger.info("Filering files to be copied ...")
 files_to_copy = get_files(args)
 
-_logger.debug("Coping files ...")
+_logger.info("Coping files ...")
 copy_files(files_to_copy)
 
-_logger.debug("Ending collector ...")
+_logger.info("Ending collector ...")
