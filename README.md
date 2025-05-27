@@ -1,5 +1,5 @@
 # Description
-Uniovi Simur WearablePerMed Data Collector. Copy all files from one folder to another one excluding some file extensions.
+Copy all files from one folder to another one excluding some file extensions.
 
 # Execute
 
