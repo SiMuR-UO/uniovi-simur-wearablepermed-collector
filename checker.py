@@ -1,4 +1,5 @@
 import argparse
+import csv
 import os
 import shutil
 import sys
@@ -11,7 +12,7 @@ __license__ = "MIT"
 
 _logger = logging.getLogger(__name__)
 
-files_to_copy = []
+files_to_check = []
 
 def parse_extensions(ext_string):
     # Split by comma, strip whitespace, ensure each starts with dot, and make a set
@@ -36,7 +37,14 @@ def parse_args(args):
         required=True,
         dest="source_root",
         help="Source root folder",
-    )            
+    )
+    parser.add_argument(
+        "-df",
+        "--destination-file",
+        required=True,
+        dest="destination_file",
+        help="Destination file",
+    )                 
     parser.add_argument(
         "-v",
         "--verbose",
@@ -67,19 +75,29 @@ def setup_logging(loglevel):
         level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
     )
 
-def check_files(args):
+def get_files(args):
     for root, dirs, files in os.walk(args.source_root):
-        for file in files:
-            source_file = os.path.join(root, file)
+        for file in files:           
+            files_to_check.append((os.path.basename(root), file))            
 
-    return files_to_copy
+    files_ordered = sorted(files_to_check, key=lambda x: x[0])
+
+    return files_ordered
+
+def check_files(args, files_to_check):
+    with open(args.destination_file, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(files_to_check)       
 
 _logger.info("Starting checker ...")
 
 args = parse_args(sys.argv[1:])
 setup_logging(args.loglevel)
 
+_logger.info("Get files to be checked ...")
+files_to_check = get_files(args)
+
 _logger.info("Check files ...")
-check_files(args)
+check_files(args, files_to_check)
 
 _logger.info("Ending checker ...")

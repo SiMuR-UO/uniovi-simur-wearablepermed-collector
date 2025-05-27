@@ -26,3 +26,11 @@ $ python3 collector.py \
 -ex '.MOV, .JPG'
 -v
 ```
+
+Check all files from folder `/home/simur/git/uniovi-simur-wearablepermed-data`:
+
+```
+$ python3 collector.py \
+-sr /home/simur/git/uniovi-simur-wearablepermed-data' \
+-v
+```
