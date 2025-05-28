@@ -92,8 +92,9 @@ def check_activity_register(file):
     for row in sheet.iter_rows():
         for cell in row:
             if cell.value == target:
-                found_cell = cell
-                break
+                if (row[cell.column + 2].value is not None):
+                    found_cell = cell
+                    break
         if found_cell:
             break
 
