@@ -45,11 +45,11 @@ def parse_args(args):
         help="Destination root folder",
     ) 
     parser.add_argument(
-        "-ex",
-        "--excluded-extensions",
+        "-in",
+        "--include-extensions",
         type=parse_extensions,
         required=True,
-        help="Exclude files extensions",
+        help="Include files extensions",
     )             
     parser.add_argument(
         "-v",
@@ -81,10 +81,10 @@ def setup_logging(loglevel):
         level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
     )
 
-def get_files(args):
+def filter_files(args):
     for root, dirs, files in os.walk(args.source_root):
         for file in files:
-            if not any(file.endswith(ext) for ext in args.excluded_extensions):
+            if any(file.endswith(ext) for ext in args.include_extensions):
                 source_file = os.path.join(root, file)
                 relative_path = os.path.relpath(source_file, start=args.source_root)
                 destination_file = os.path.join(args.destination_root, relative_path)
@@ -106,7 +106,7 @@ args = parse_args(sys.argv[1:])
 setup_logging(args.loglevel)
 
 _logger.info("Filering files to be copied ...")
-files_to_copy = get_files(args)
+files_to_copy = filter_files(args)
 
 _logger.info("Coping files ...")
 copy_files(files_to_copy)

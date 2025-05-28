@@ -17,20 +17,21 @@ $ deactivate
 
 # Execute commands
 
-Copy all files from folder `/media/simur/maxone/COMPLETOS` to folder `/home/simur/git/uniovi-simur-wearablepermed-data` except images (*.JPG) and movies (*.MOV) files:
+Copy all files from folder `/media/simur/maxone/COMPLETOS` to folder `/home/simur/git/uniovi-simur-wearablepermed-data` including telemetry (*.BIN) and activity reports (*.xlsx) files:
 
 ```
 $ python3 collector.py \
 -sr '/media/simur/maxone/COMPLETOS' \
 -dr '/home/simur/git/uniovi-simur-wearablepermed-data' \
--ex '.MOV, .JPG'
+-in '.BIN, .xlsx' \
 -v
 ```
 
 Check all files from folder `/home/simur/git/uniovi-simur-wearablepermed-data`:
 
 ```
-$ python3 collector.py \
--sr /home/simur/git/uniovi-simur-wearablepermed-data' \
+$ python3 checker.py \
+-sr '/home/simur/git/uniovi-simur-wearablepermed-data' \
+-df '/home/simur/git/uniovi-simur-wearablepermed-data/resume.csv' \
 -v
 ```
