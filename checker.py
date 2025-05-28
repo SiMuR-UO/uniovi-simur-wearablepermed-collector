@@ -78,9 +78,11 @@ def setup_logging(loglevel):
 def get_files(args):
     for root, dirs, files in os.walk(args.source_root):
         for file in files:           
-            files_to_check.append((os.path.basename(root), file))            
+            _, ext = os.path.splitext(file)
+            files_to_check.append((os.path.basename(root), ext, file))            
 
-    files_ordered = sorted(files_to_check, key=lambda x: x[0])
+    #files_ordered = sorted(files_to_check, key=lambda x: x[0])
+    files_ordered = sorted(files_to_check)
 
     return files_ordered
 
