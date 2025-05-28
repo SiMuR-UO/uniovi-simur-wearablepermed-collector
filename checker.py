@@ -100,9 +100,9 @@ def check_activity_register(file):
 
     if found_cell:
         print(f"Found '{target}' at cell {found_cell.coordinate}")
-        return True
+        return True, row[cell.column + 2].value
     else:
-        return False    
+        return False, None    
 
 def get_files(args):
     for root, dirs, files in os.walk(args.source_root):
@@ -112,16 +112,16 @@ def get_files(args):
 
             # get only activity registers
             if ext == ".BIN":
-                files_to_check.append((root, ext, file, None))
+                files_to_check.append((root, ext, file, None, None))
             elif (ext == ".xlsx" and "RegistroActividades" in file):
                 try:
                     exist_final_date = check_activity_register(os.path.join(root, file))
                 except:
                     _logger.error("Error checking this activity register: " + file)                    
             
-                files_to_check.append((root, ext, file,exist_final_date))
+                files_to_check.append((root, ext, file, exist_final_date[0], exist_final_date[1]))
       
-    files_updated = [(str(Path(root).relative_to(args.source_root)), ext, file, exist_final_date) for root, ext, file, exist_final_date in files_to_check]
+    files_updated = [(str(Path(root).relative_to(args.source_root)), ext, file, exist_final_date, final_date_value) for root, ext, file, exist_final_date, final_date_value in files_to_check]
 
     files_ordered = sorted(files_updated)
 
@@ -132,7 +132,7 @@ def create_csv(args, files_to_check):
         writer = csv.writer(file)
         writer.writerows(files_to_check)
 
-        h = ["PARTICIPANT", "EXTENSION", "FILE", "EXIST_FINAL_DATE"]
+        h = ["PARTICIPANT", "EXTENSION", "FILE", "EXIST_FINAL_DATE", "FINAL_DATE_VALUE"]
         df = pd.read_csv(args.destination_file, header=None, names=h)
 
         df.to_excel(args.destination_file.replace("csv", "xlsx"), sheet_name="Resume", index=False)       
