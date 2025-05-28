@@ -1,10 +1,13 @@
 import argparse
 import csv
 import os
+from pathlib import Path
 import shutil
 import sys
 import logging
 from tqdm import tqdm
+from openpyxl import load_workbook
+import pandas as pd
 
 __author__ = "Miguel Angel Salinas Gancedo"
 __copyright__ = "Simur"
@@ -75,21 +78,63 @@ def setup_logging(loglevel):
         level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
     )
 
+def check_activity_register(file):
+    # Load the workbook
+    wb = load_workbook(file)
+
+    # Select a sheet (by name or active)
+    sheet = wb.active
+
+    # Check if exist final date
+    target = 'Devolución acelerómetro de muñeca'
+    found_cell = None
+
+    for row in sheet.iter_rows():
+        for cell in row:
+            if cell.value == target:
+                found_cell = cell
+                break
+        if found_cell:
+            break
+
+    if found_cell:
+        print(f"Found '{target}' at cell {found_cell.coordinate}")
+        return True
+    else:
+        return False    
+
 def get_files(args):
     for root, dirs, files in os.walk(args.source_root):
-        for file in files:           
-            _, ext = os.path.splitext(file)
-            files_to_check.append((os.path.basename(root), ext, file))            
+        for file in files:
+            # get participant name           
+            _, ext = os.path.splitext(file)         
 
-    #files_ordered = sorted(files_to_check, key=lambda x: x[0])
-    files_ordered = sorted(files_to_check)
+            # get only activity registers
+            if ext == ".BIN":
+                files_to_check.append((root, ext, file, None))
+            elif (ext == ".xlsx" and "RegistroActividades" in file):
+                try:
+                    exist_final_date = check_activity_register(os.path.join(root, file))
+                except:
+                    _logger.error("Error checking this activity register: " + file)                    
+            
+                files_to_check.append((root, ext, file,exist_final_date))
+      
+    files_updated = [(str(Path(root).relative_to(args.source_root)), ext, file, exist_final_date) for root, ext, file, exist_final_date in files_to_check]
+
+    files_ordered = sorted(files_updated)
 
     return files_ordered
 
-def check_files(args, files_to_check):
+def create_csv(args, files_to_check):
     with open(args.destination_file, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerows(files_to_check)       
+        writer.writerows(files_to_check)
+
+        h = ["PARTICIPANT", "EXTENSION", "FILE", "EXIST_FINAL_DATE"]
+        df = pd.read_csv(args.destination_file, header=None, names=h)
+
+        df.to_excel(args.destination_file.replace("csv", "xlsx"), sheet_name="Resume", index=False)       
 
 _logger.info("Starting checker ...")
 
@@ -99,7 +144,7 @@ setup_logging(args.loglevel)
 _logger.info("Get files to be checked ...")
 files_to_check = get_files(args)
 
-_logger.info("Check files ...")
-check_files(args, files_to_check)
+_logger.info("Create CSV report ...")
+create_csv(args, files_to_check)
 
 _logger.info("Ending checker ...")
