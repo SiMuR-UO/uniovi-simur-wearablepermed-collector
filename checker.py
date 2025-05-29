@@ -113,7 +113,8 @@ def get_files(args):
             # get only activity registers
             if ext == ".BIN":
                 files_to_check.append((root, ext, file, None, None))
-            elif (ext == ".xlsx" and "RegistroActividades" in file):
+            #elif (ext == ".xlsx" and "RegistroActividades" in file):
+            elif (ext == ".xlsx" in file):
                 try:
                     exist_final_date = check_activity_register(os.path.join(root, file))
                 except:
@@ -128,14 +129,11 @@ def get_files(args):
     return files_ordered
 
 def create_csv(args, files_to_check):
-    with open(args.destination_file, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerows(files_to_check)
+    # Create DataFrame with columns
+    h = ["PARTICIPANT", "EXTENSION", "FILE", "EXIST_FINAL_DATE", "FINAL_DATE_VALUE"]
+    df = pd.DataFrame(files_to_check, columns=h)
 
-        h = ["PARTICIPANT", "EXTENSION", "FILE", "EXIST_FINAL_DATE", "FINAL_DATE_VALUE"]
-        df = pd.read_csv(args.destination_file, header=None, names=h)
-
-        df.to_excel(args.destination_file.replace("csv", "xlsx"), sheet_name="Resume", index=False)       
+    df.to_excel(args.destination_file.replace("csv", "xlsx"), sheet_name="Resume", index=False)       
 
 _logger.info("Starting checker ...")
 
