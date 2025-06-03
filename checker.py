@@ -128,7 +128,7 @@ def get_files(args):
 
     return files_ordered
 
-def create_csv(args, files_to_check):
+def create_excel(args, files_to_check):
     # Create DataFrame with columns
     h = ["PARTICIPANT", "EXTENSION", "FILE", "EXIST_FINAL_DATE", "FINAL_DATE_VALUE"]
     df = pd.DataFrame(files_to_check, columns=h)
@@ -143,7 +143,7 @@ setup_logging(args.loglevel)
 _logger.info("Get files to be checked ...")
 files_to_check = get_files(args)
 
-_logger.info("Create CSV report ...")
-create_csv(args, files_to_check)
+_logger.info("Create Excel report ...")
+create_excel(args, files_to_check)
 
 _logger.info("Ending checker ...")
