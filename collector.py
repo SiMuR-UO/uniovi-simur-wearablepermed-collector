@@ -108,7 +108,7 @@ setup_logging(args.loglevel)
 _logger.info("Filering files to be copied ...")
 files_to_copy = filter_files(args)
 
-_logger.info("Coping files ...")
+_logger.info("Copying files ...")
 copy_files(files_to_copy)
 
 _logger.info("Ending collector ...")
