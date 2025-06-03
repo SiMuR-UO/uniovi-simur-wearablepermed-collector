@@ -135,7 +135,7 @@ def create_excel(args, files_to_check):
 
     df.to_excel(args.destination_file.replace("csv", "xlsx"), sheet_name="Resume", index=False)       
 
-_logger.info("Starting checker ...")
+_logger.info("Starting checker python module ...")
 
 args = parse_args(sys.argv[1:])
 setup_logging(args.loglevel)
@@ -146,4 +146,4 @@ files_to_check = get_files(args)
 _logger.info("Create Excel report ...")
 create_excel(args, files_to_check)
 
-_logger.info("Ending checker ...")
+_logger.info("Ending checker python module ...")
